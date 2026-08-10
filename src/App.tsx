@@ -81,6 +81,7 @@ const editingBook =
 
   return (
     <div className="app">
+      <h1>Biblioteca</h1>
       <BookFilter onFilterChange={filterBooks} />
       <SearchBar onSearch={searchBooks} />
       {editingIndex === null ? (
