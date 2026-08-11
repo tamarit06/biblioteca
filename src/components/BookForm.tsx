@@ -5,7 +5,7 @@ import "./BookForm.css";
 type Props = {
     onAddBook: (book: Book) => void;
     onEditBook: (index: number, updatedBook: Book) => void;
-    editingIndex: number | null;
+    editingIndex:string| number | null;
     editingBook:Book | null;
     onFinishEditing: () => void;
 };
@@ -14,7 +14,7 @@ function BookForm({ onAddBook, onEditBook, editingIndex ,editingBook, onFinishEd
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [author, setAuthor] = useState("");
-  const [year, setYear] = useState(0);
+  const [year, setYear] = useState("");
   const [image, setImage] = useState("");
 
 useEffect(() => {
@@ -28,7 +28,12 @@ useEffect(() => {
 }, [editingBook]);
 
   const agregarBook = () => {
+    if(title.trim() === "" || author.trim() === "" ) {
+      alert("Por favor, complete tan solo el titulo y el autor del libro.");
+      return;
+    }
     const nuevoLibro: Book = {
+      id:crypto.randomUUID(),
       title,
       genre,
       author,
@@ -42,11 +47,12 @@ useEffect(() => {
     setTitle("");
     setGenre("");
     setAuthor("");
-    setYear(0);
+    setYear("");
     setImage("");
   };
 const editarBook = (index: number) => {
   const updatedBook: Book = {
+    id: editingBook?.id ?? crypto.randomUUID(),
     title,
     genre,
     author,
@@ -86,10 +92,10 @@ const editarBook = (index: number) => {
 
       <input
         className="book-input"
-        type="number"
+        type="text"
         placeholder="Año"
         value={year}
-        onChange={(e) => setYear(Number(e.target.value))}
+        onChange={(e) => setYear((e.target.value))}
       />
 
       <input
@@ -106,7 +112,7 @@ const editarBook = (index: number) => {
   </button>
 ) : (
   <>
-    <button className="button-secondary" onClick={() => editarBook(editingIndex)}>
+    <button className="button-secondary" onClick={() => editarBook(editingIndex as number)}>
     Guardar cambios
   </button>
   <button className="button-danger" onClick={onFinishEditing}>
