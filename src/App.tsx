@@ -18,7 +18,7 @@ function App() {
       genre: "Fiction",
       author: "F. Scott Fitzgerald",
       year: 1925,
-      image: "https://example.com/gatsby.jpg",
+      image: "https://upload.wikimedia.org/wikipedia/commons/7/7a/The_Great_Gatsby_Cover_1925_Retouched.jpg",
       isRead: true,
     },
   ]);
@@ -82,8 +82,12 @@ const editingBook =
   return (
     <div className="app">
       <h1>Biblioteca</h1>
-      <BookFilter onFilterChange={filterBooks} />
+      <div className="library-container">
+
       <SearchBar onSearch={searchBooks} />
+      <BookFilter onFilterChange={filterBooks} />
+      </div>
+      
       {editingIndex === null ? (
   <>
     <BookForm

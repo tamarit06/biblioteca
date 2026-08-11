@@ -1,5 +1,6 @@
 import { useState ,useEffect} from "react";
 import type { Book } from "../interfaces/book.ts"
+import "./BookForm.css";
 
 type Props = {
     onAddBook: (book: Book) => void;
@@ -58,8 +59,9 @@ const editarBook = (index: number) => {
   onFinishEditing();
 };
   return (
-    <div>
+    <div className="book-form">
       <input
+        className="book-input"
         type="text"
         placeholder="Título"
         value={title}
@@ -67,6 +69,7 @@ const editarBook = (index: number) => {
       />
 
       <input
+        className="book-input"
         type="text"
         placeholder="Género"
         value={genre}
@@ -74,6 +77,7 @@ const editarBook = (index: number) => {
       />
 
       <input
+        className="book-input"
         type="text"
         placeholder="Autor"
         value={author}
@@ -81,6 +85,7 @@ const editarBook = (index: number) => {
       />
 
       <input
+        className="book-input"
         type="number"
         placeholder="Año"
         value={year}
@@ -88,6 +93,7 @@ const editarBook = (index: number) => {
       />
 
       <input
+        className="book-input"
         type="text"
         placeholder="Imagen"
         value={image}
@@ -95,15 +101,15 @@ const editarBook = (index: number) => {
       />
 
       {editingIndex === null ? (
-  <button onClick={agregarBook}>
+  <button className="button-primary" onClick={agregarBook}>
     Agregar Libro
   </button>
 ) : (
   <>
-    <button onClick={() => editarBook(editingIndex)}>
+    <button className="button-secondary" onClick={() => editarBook(editingIndex)}>
     Guardar cambios
   </button>
-  <button onClick={onFinishEditing}>
+  <button className="button-danger" onClick={onFinishEditing}>
     Cancel
 
   </button>

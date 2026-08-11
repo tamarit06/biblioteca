@@ -1,0 +1,16 @@
+.book-filter{
+    padding:8px 14px;
+    background-color: #82aff8;
+    color:white;
+    border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor:pointer;
+}
+.book-filter:hover {
+ background-color: #3b82f6;
+}
+.book-filter option {
+  background-color: white;
+  color: #1f2937;
+}

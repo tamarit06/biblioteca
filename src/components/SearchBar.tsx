@@ -6,7 +6,7 @@ type Props = {
 function SearchBar({ onSearch }: Props) {
   const [query, setQuery] = useState<string>("");
   return (
-    <>
+    <div className="search-bar">
       <input
         className="search-input"
         type="text"
@@ -17,7 +17,7 @@ function SearchBar({ onSearch }: Props) {
       <button className="search-button" onClick={() => onSearch(query)}>
         Buscar
       </button>
-    </>
+    </div>
   );
 }
 export default SearchBar;
