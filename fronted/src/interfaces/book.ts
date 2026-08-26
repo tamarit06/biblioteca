@@ -1,9 +1,18 @@
-export interface Book {
-    id: string|number;
+export interface BookCreate {
     title: string;
     genre: string;
     author: string;
-    year: string;
+    year: number;
     image: string;
-    isRead: boolean;
+    is_read: boolean;
+}
+
+export interface Book {
+    id: number;
+    title: string;
+    genre: string;
+    author: string;
+    year: number;
+    image: string;
+    is_read: boolean;
 }

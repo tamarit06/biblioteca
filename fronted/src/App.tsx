@@ -1,91 +1,147 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BookList from "./components/BookList";
 import BookForm from "./components/BookForm";
-import type { Book } from "./interfaces/book.ts";
+import type { Book, BookCreate } from "./interfaces/book.ts";
 import SearchBar from "./components/SearchBar.tsx";
 import BookFilter from "./components/BookFilter.tsx";
 import "./App.css";
+import { getBooks,
+  createBook,
+  deleteBook,
+  updateBook
+ } from "./services/bookservices.ts"
 
 function App() {
   const [search, setSearch] = useState<string>("");
   const [filter, setFilter] = useState<string>("all");
-  const [editingId, setEditingId] = useState<string|number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
 
-  const [books, setBooks] = useState<Book[]>([
-    {
-      id: 1,
-      title: "The Great Gatsby",
-      genre: "Fiction",
-      author: "F. Scott Fitzgerald",
-      year: "1925",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/7/7a/The_Great_Gatsby_Cover_1925_Retouched.jpg",
-      isRead: true,
-    },
-  ]);
+  const [books, setBooks] = useState<Book[]>([]);
+
+  useEffect(() => {
+    getBooks()
+      .then((data) => {
+        setBooks(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   const filteredBooks = books.filter((book) => {
-    const matchSearch = book.title.toLowerCase().includes(search.toLowerCase());
+    const matchSearch = book.title
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
     const matchFilter =
       filter === "all" ||
-      (filter === "read" && book.isRead) ||
-      (filter === "unread" && !book.isRead);
+      (filter === "read" && book.is_read) ||
+      (filter === "unread" && !book.is_read);
+
     return matchSearch && matchFilter;
   });
 
- 
-  const onDeleteBook = (id: string | number) => {
-  const updatedBooks = books.filter((book) => book.id !== id);
-  setBooks(updatedBooks);
-};
-  const agregarBook = (newBook: Book) => {
-    setBooks([...books, newBook]);
-  };
-  const toggleReadBook = (index: number) => {
-    setBooks(
-      books.map((book) => {
-        if (book.id === index) {
-          return {
-            ...book,
-            isRead: !book.isRead,
-          };
-        }
+ const onDeleteBook = async (id: number) => {
+  try {
+    await deleteBook(id);
 
-        return book;
-      }),
-    );
-  };
-  const searchBooks = (searchTerm: string) => {
-    setSearch(searchTerm);
-  };
-  const filterBooks = (filterTerm: string) => {
-    setFilter(filterTerm);
-  };
-  const editBook = (index: number, updatedBook: Book) => {
+    setBooks(books.filter((book) => book.id !== id));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+  const agregarBook = async (newBook: BookCreate) => {
+  try {
+    const createdBook = await createBook(newBook);
+
+    setBooks([...books, createdBook]);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const toggleReadBook = async (id: number) => {
+  const book = books.find((book) => book.id === id);
+
+  if (!book) {
+    return;
+  }
+
+  try {
+    const updatedBook = await updateBook(id, {
+      title: book.title,
+      genre: book.genre,
+      author: book.author,
+      year: book.year,
+      image: book.image,
+      is_read: !book.is_read,
+    });
+
     setBooks(
       books.map((book) => {
-        if (book.id === index) {
+        if (book.id === id) {
           return updatedBook;
         }
 
         return book;
       }),
     );
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+  const searchBooks = (searchTerm: string) => {
+    setSearch(searchTerm);
   };
-  const startEditing = (id: string | number) => {
+
+  const filterBooks = (filterTerm: string) => {
+    setFilter(filterTerm);
+  };
+
+  const editBook = async (id: number, updatedBook: Book) => {
+  try {
+    const updated = await updateBook(id, {
+      title: updatedBook.title,
+      genre: updatedBook.genre,
+      author: updatedBook.author,
+      year: updatedBook.year,
+      image: updatedBook.image,
+      is_read: updatedBook.is_read,
+    });
+
+    setBooks(
+      books.map((book) => {
+        if (book.id === id) {
+          return updated;
+        }
+
+        return book;
+      }),
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+  const startEditing = (id: number) => {
     setEditingId(id);
   };
+
   const finishEditing = () => {
     setEditingId(null);
   };
 
- const editingBook =
-  editingId !== null
-    ? books.find((book) => book.id === editingId) ?? null
-    : null;
+  const editingBook =
+    editingId !== null
+      ? books.find((book) => book.id === editingId) ?? null
+      : null;
 
   return (
     <div className="app">
       <h1>Biblioteca</h1>
+
       <div className="library-container">
         <SearchBar onSearch={searchBooks} />
         <BookFilter onFilterChange={filterBooks} />
@@ -96,7 +152,7 @@ function App() {
           <BookForm
             onAddBook={agregarBook}
             onEditBook={editBook}
-            editingIndex={editingId}
+            editingId={editingId}
             editingBook={editingBook}
             onFinishEditing={finishEditing}
           />
@@ -112,7 +168,7 @@ function App() {
         <BookForm
           onAddBook={agregarBook}
           onEditBook={editBook}
-          editingIndex={editingId}
+          editingId={editingId}
           editingBook={editingBook}
           onFinishEditing={finishEditing}
         />

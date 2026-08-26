@@ -1,5 +1,5 @@
-from fastapi import APIRouter,Depends
-from app.schemas.book import BookCreate
+from fastapi import APIRouter, Depends, HTTPException
+from app.schemas.book import BookCreate, BookResponse
 from app.services.book_services import book_services
 from app.database import get_db
 
@@ -10,41 +10,50 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get("/", response_model=list[BookResponse])
 def get_books(db=Depends(get_db)):
     return book_services.get_books(db)
 
 
-@router.get("/{book_id}")
-def get_book(book_id: int):
-    book = book_services.get_book(book_id)
+@router.get("/{book_id}",response_model=BookResponse)
+def get_book(book_id: int,db=Depends(get_db)):
+    book = book_services.get_book(book_id,db)
 
     if book is None:
-        return {"error": "Book not found"}
+        raise HTTPException(
+            status_code=404,
+            detail="Book not found"
+        )
 
     return book
 
 
-@router.post("/")
-def create_book(book: BookCreate):
-    return book_services.create_book(book)
+@router.post("/", status_code=201,response_model=BookResponse)
+def create_book(book: BookCreate,db=Depends(get_db)):
+    return book_services.create_book(book,db)
 
 
-@router.put("/{book_id}")
-def update_book(book_id: int, book: BookCreate):
-    updated_book = book_services.update_book(book_id, book)
+@router.put("/{book_id}",response_model=BookResponse)
+def update_book(book_id: int, book: BookCreate,db=Depends(get_db)):
+    updated_book = book_services.update_book(book_id, book,db)
 
     if updated_book is None:
-        return {"error": "Book not found"}
+        raise HTTPException(
+            status_code=404,
+            detail="Book not found"
+        )
 
     return updated_book
 
 
-@router.delete("/{book_id}")
-def delete_book(book_id: int):
-    deleted_book = book_services.delete_book(book_id)
-
+@router.delete("/{book_id}",response_model=BookResponse)
+def delete_book(book_id: int,db=Depends(get_db)):
+    deleted_book = book_services.delete_book(book_id,db)
+    
     if deleted_book is None:
-        return {"error": "Book not found"}
+        raise HTTPException(
+            status_code=404,
+            detail="Book not found"
+        )
 
     return deleted_book

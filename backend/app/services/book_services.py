@@ -10,43 +10,48 @@ class BookService:
     def get_books(self,db):
         return db.query(Book).all()
 
-    def get_book(self, book_id: int):
-        for book in self.books:
-            if book["id"] == book_id:
-                return book
+    def get_book(self, book_id: int,db):
+       return db.query(Book).filter(Book.id == book_id).first()
 
-        return None
+      
 
-    def create_book(self, book: BookCreate):
-        new_book = {
-            "id": len(self.books) + 1,
-            **book.model_dump()
-        }
-
-        self.books.append(new_book)
+    def create_book(self, book: BookCreate,db):
+        new_book=Book(**book.model_dump())
+        db.add(new_book)
+        db.commit()
+        db.refresh(new_book)
 
         return new_book
 
-    def update_book(self, book_id: int, book: BookCreate):
-        for index, existing_book in enumerate(self.books):
-            if existing_book["id"] == book_id:
-                updated_book = {
-                    "id": book_id,
-                    **book.model_dump()
-                }
+    def update_book(self, book_id: int, book: BookCreate,db):
+        existing_book=db.query(Book).filter(Book.id==book_id).first()
+        if existing_book is None:
+            return None
 
-                self.books[index] = updated_book
+        data = book.model_dump()
 
-                return updated_book
+        existing_book.title = data["title"]
+        existing_book.author = data["author"]
+        existing_book.genre = data["genre"]
+        existing_book.is_read = data["is_read"]
+        existing_book.year=data["year"]
+        existing_book.image=data["image"]
 
-        return None
+        db.commit()
+        db.refresh(existing_book)
 
-    def delete_book(self, book_id: int):
-        for index, book in enumerate(self.books):
-            if book["id"] == book_id:
-                return self.books.pop(index)
+        return existing_book
+       
 
-        return None
+    def delete_book(self, book_id: int,db):
+        book=db.query(Book).filter(Book.id==book_id).first()
+        if book is None:
+            return None
+        db.delete(book)
+        db.commit()
+        return book
+         
+       
 
 
 book_services = BookService()

@@ -8,7 +8,7 @@ type Props = {
 };
 
 function BookComponent({ book, onDelete, onToggleRead, onEdit }: Props) {
-  const { title, genre, author, year, image, isRead } = book;
+  const { title, genre, author, year, image, is_read } = book;
   return (
     <div className="book">
       <img
@@ -22,8 +22,8 @@ function BookComponent({ book, onDelete, onToggleRead, onEdit }: Props) {
         <p>Author: {author}</p>
         <p>Year: {year}</p>
         <div className="book-status">
-          <p>Status: {isRead ? "Read" : "Not Read"}</p>
-          <input type="checkbox" checked={isRead} onChange={onToggleRead} />
+          <p>Status: {is_read ? "Read" : "Not Read"}</p>
+          <input type="checkbox" checked={is_read} onChange={onToggleRead} />
         </div>
     
         <div className="book-buttons">

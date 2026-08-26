@@ -1,20 +1,20 @@
 import { useState ,useEffect} from "react";
-import type { Book } from "../interfaces/book.ts"
+import type { Book,BookCreate } from "../interfaces/book.ts"
 import "./BookForm.css";
 
 type Props = {
-    onAddBook: (book: Book) => void;
+    onAddBook: (book: BookCreate) => void;
     onEditBook: (index: number, updatedBook: Book) => void;
-    editingIndex:string| number | null;
+    editingId:number | null;
     editingBook:Book | null;
     onFinishEditing: () => void;
 };
 
-function BookForm({ onAddBook, onEditBook, editingIndex ,editingBook, onFinishEditing}: Props) {
+function BookForm({ onAddBook, onEditBook, editingId ,editingBook, onFinishEditing}: Props) {
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [author, setAuthor] = useState("");
-  const [year, setYear] = useState("");
+  const [year, setYear] = useState<number>(0);
   const [image, setImage] = useState("");
 
 useEffect(() => {
@@ -32,14 +32,13 @@ useEffect(() => {
       alert("Por favor, complete tan solo el titulo y el autor del libro.");
       return;
     }
-    const nuevoLibro: Book = {
-      id:crypto.randomUUID(),
+    const nuevoLibro: BookCreate= {
       title,
       genre,
       author,
       year,
       image,
-      isRead: false,
+      is_read: false,
     };
 
     onAddBook(nuevoLibro);
@@ -47,18 +46,21 @@ useEffect(() => {
     setTitle("");
     setGenre("");
     setAuthor("");
-    setYear("");
+    setYear(0);
     setImage("");
   };
 const editarBook = (index: number) => {
+   if (!editingBook || year === undefined) {
+    return;
+  }
   const updatedBook: Book = {
-    id: editingBook?.id ?? crypto.randomUUID(),
+    id: editingBook.id,
     title,
     genre,
     author,
     year,
     image,
-    isRead: editingBook?.isRead ?? false,
+    is_read: editingBook?.is_read ?? false,
   };
 
   onEditBook(index, updatedBook);
@@ -92,10 +94,10 @@ const editarBook = (index: number) => {
 
       <input
         className="book-input"
-        type="text"
+        type="number"
         placeholder="Año"
-        value={year}
-        onChange={(e) => setYear((e.target.value))}
+        value={year?? ""}
+        onChange={(e) => setYear(Number(e.target.value))}
       />
 
       <input
@@ -106,13 +108,13 @@ const editarBook = (index: number) => {
         onChange={(e) => setImage(e.target.value)}
       />
 
-      {editingIndex === null ? (
+      {editingId === null ? (
   <button className="button-primary" onClick={agregarBook}>
     Agregar Libro
   </button>
 ) : (
   <>
-    <button className="button-secondary" onClick={() => editarBook(editingIndex as number)}>
+    <button className="button-secondary" onClick={() => editarBook(editingId)}>
     Guardar cambios
   </button>
   <button className="button-danger" onClick={onFinishEditing}>
