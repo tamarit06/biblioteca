@@ -1,8 +1,8 @@
 import type { Book, BookCreate } from "../../interfaces/book";
-import BookList from "../BookList";
-import BookForm from "../BookForm";
-import SearchBar from "../SearchBar";
-import BookFilter from "../BookFilter";
+import BookList from "../books/BookList";
+import BookForm from "../books/BookForm";
+import SearchBar from "../search/SearchBar";
+import BookFilter from "../search/BookFilter";
 
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
   editingBook: Book | null;
 
   onAddBook: (book: BookCreate) => void;
-  onEditBook: (id: number, updatedBook: Book) => void;
+  onEditBook: (id: number, updatedBook: BookCreate) => void;
   onDeleteBook: (id: number) => void;
   onToggleReadBook: (id: number) => void;
 
@@ -48,6 +48,7 @@ function LibraryPage({
       {editingId === null ? (
         <>
           <BookForm
+           key={editingId ?? "new"}
             onAddBook={onAddBook}
             onEditBook={onEditBook}
             editingId={editingId}

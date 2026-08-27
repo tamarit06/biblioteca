@@ -1,4 +1,4 @@
-import type { Book } from "../interfaces/book.ts";
+import type { Book } from "../../interfaces/book"; 
 import "./BookComponent.css";
 type Props = {
   book: Book;

@@ -1,4 +1,4 @@
-import LibraryPage from "./components/layout/LibraryPage";
+import LibraryPage from "./components/books/LibraryPage";
 import { useBooks } from "./hooks/useBooks";
 
 import "./App.css";

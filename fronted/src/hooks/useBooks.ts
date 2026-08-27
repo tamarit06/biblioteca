@@ -51,6 +51,8 @@ const filteredBooks = books.filter((book) => {
   }
 };
 
+
+
   const addBook = async (newBook: BookCreate) => {
   try {
     const createdBook = await createBook(newBook);
@@ -60,16 +62,10 @@ const filteredBooks = books.filter((book) => {
     console.error(error);
   }
 };
-const editBook = async (id: number, updatedBook: Book) => {
+
+const editBook = async (id: number, updatedBook: BookCreate) => {
   try {
-    const updated = await updateBook(id, {
-      title: updatedBook.title,
-      genre: updatedBook.genre,
-      author: updatedBook.author,
-      year: updatedBook.year,
-      image: updatedBook.image,
-      is_read: updatedBook.is_read,
-    });
+   const updated = await updateBook(id, updatedBook);
 
   setBooks((currentBooks) =>
   currentBooks.map((book) =>
