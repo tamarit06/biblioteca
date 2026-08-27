@@ -1,5 +1,5 @@
 .book {
-  width: 500px;
+  width: 300px;
   padding: 20px;
 
   background-color: #ffffff;
@@ -10,6 +10,8 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
 
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  text-align: center;
 }
 .book:hover {
   transform: translateY(-5px);

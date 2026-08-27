@@ -1,13 +1,16 @@
-import LibraryPage from "./components/books/LibraryPage";
+import LibraryPage from "./components/layout/LibraryPage";
 import { useBooks } from "./hooks/useBooks";
 
-import "./App.css";
+
 
 function App() {
   const {
     books,
     editingId,
     editingBook,
+    bookError,
+    isLoading,
+    isAdding,
     addBook,
     editBook,
     removeBook,
@@ -16,13 +19,18 @@ function App() {
     filterBooks,
     startEditing,
     finishEditing,
+    startAdding,
+    finishAdding
   } = useBooks();
 
   return (
     <LibraryPage
       books={books}
+    isAdding={isAdding}
       editingId={editingId}
       editingBook={editingBook}
+        bookError={bookError}
+        isLoading={isLoading}
       onAddBook={addBook}
       onEditBook={editBook}
       onDeleteBook={removeBook}
@@ -31,6 +39,8 @@ function App() {
       onFilterChange={filterBooks}
       onStartEditing={startEditing}
       onFinishEditing={finishEditing}
+      onFinishAdding={finishAdding}
+      onStartAdding={startAdding}
     />
   );
 }

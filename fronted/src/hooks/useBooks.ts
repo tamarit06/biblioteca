@@ -13,6 +13,9 @@ export function useBooks() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [bookError, setBookError] = useState<string | null>(null);
+  const[isLoading,setIsLoading]=useState(true);
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     getBooks()
@@ -21,7 +24,11 @@ export function useBooks() {
       })
       .catch((error) => {
         console.error(error);
-      });
+        setBookError("No se pudieron cargar los libros")
+        
+      })
+      .finally(()=>{setIsLoading(false)})
+      
   }, []);
 
  
@@ -48,16 +55,21 @@ const filteredBooks = books.filter((book) => {
 );
   } catch (error) {
     console.error(error);
+    setBookError("No se pudo eliminar el libro");
   }
 };
 
 
 
-  const addBook = async (newBook: BookCreate) => {
+const addBook = async (newBook: BookCreate) => {
   try {
+    console.log("Libro enviado al backend:", newBook);
+
     const createdBook = await createBook(newBook);
 
-  setBooks((currentBooks) => [...currentBooks, createdBook]);
+    setBooks((currentBooks) => [...currentBooks, createdBook]);
+    setIsAdding(false);
+
   } catch (error) {
     console.error(error);
   }
@@ -74,6 +86,7 @@ const editBook = async (id: number, updatedBook: BookCreate) => {
 );
   } catch (error) {
     console.error(error);
+    setBookError("No se pudo editar el libro")
   }
 };
 
@@ -106,6 +119,13 @@ const toggleReadBook = async (id: number) => {
   const finishEditing = () => {
     setEditingId(null);
   };
+  const startAdding = () => {
+  setIsAdding(true);
+};
+
+const finishAdding = () => {
+  setIsAdding(false);
+};
 
   const editingBook =
     editingId !== null
@@ -116,6 +136,10 @@ const toggleReadBook = async (id: number) => {
     books: filteredBooks,
     editingId,
     editingBook,
+    isAdding,
+
+    bookError,
+    isLoading,
 
     addBook,
     editBook,
@@ -127,5 +151,8 @@ const toggleReadBook = async (id: number) => {
 
     startEditing,
     finishEditing,
+
+    startAdding,
+    finishAdding
   };
 }

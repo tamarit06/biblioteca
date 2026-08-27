@@ -1,5 +1,6 @@
 import type { Book } from "../../interfaces/book.ts"; 
 import BookComponent from "./BookComponent.tsx";
+import "./BookList.css"
 
 type Props = {
   books: Book[];
