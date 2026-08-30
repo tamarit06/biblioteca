@@ -7,7 +7,8 @@ Librario allows users to add, edit, delete, search, and filter books while keepi
 ## 📸 Preview
 
 ### Library
-![Uploading Screenshot 2026-08-29 at 22-03-03 biblioteca.png…]()
+<img width="2610" height="1206" alt="Screenshot 2026-08-29 at 22-03-03 biblioteca" src="https://github.com/user-attachments/assets/ba6b829b-ca5d-4ffc-a689-1eecab54d08f" />
+
 
 
 ### Add / Edit Book
